@@ -7,6 +7,10 @@ const User = require('../../lib/models/User');
 
 describe('Auth test', () => {
 
+  const createUser = (username, password) => {
+    return User.create({ username, password });
+  };
+
   beforeEach(done => {
     return mongoose.connection.dropDatabase(() => {
       done();
@@ -40,11 +44,7 @@ describe('Auth test', () => {
   });
 
   it('can signin an existing user', () => {
-    return User.create({
-      username: 'booboo3000',
-      password: 'abc123', 
-      // profilePhotoUrl: 'https://www.petmd.com/sites/default/files/petmd-shaking-puppy.jpg'
-    })
+    return createUser('booboo3000', 'abc123')
       .then(() => {
         return request(app)
           .post('/auth/signin')
@@ -62,6 +62,18 @@ describe('Auth test', () => {
           token: expect.any(String)
         });
       });
+  });
 
+  it('can respond with an error if bad username', () => {
+    return createUser('booboo3000', 'abc123')
+      .then(() => {
+        return request(app)
+          .post('/auth/signin')
+          .send({ username: 'blahblah3000', password: 'abc123' });
+      })
+      .then(res => {
+        expect(res.status).toEqual(401);
+        expect(res.body).toEqual({ error: 'Bad username or password' });
+      });
   });
 });
