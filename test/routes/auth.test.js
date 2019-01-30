@@ -76,4 +76,39 @@ describe('Auth test', () => {
         expect(res.body).toEqual({ error: 'Bad username or password' });
       });
   });
+
+  it('can respond with an error if bad password', () => {
+    return createUser('booboo3000', 'abc123')
+      .then(() => {
+        return request(app)
+          .post('/auth/signin')
+          .send({ username: 'booboo3000', password: 'badpassword' });
+      })
+      .then(res => {
+        expect(res.status).toEqual(401);
+        expect(res.body).toEqual({ error: 'Bad username or password' });
+      });
+  });
+
+  it('can /verify the user', () => {
+    return createUser('booboo3000', 'abce123')
+      .then(() => {
+        return request(app)
+          .post('/auth/signin')
+          .send({ username: 'booboo3000', password: 'abce123' })
+          .then(res => res.body.token);
+      })
+      .then(token => {
+        return request(app)
+          .get('/auth/verify')
+          .set('Authorization', `Bearer ${token}`);
+      })
+      .then(res => {
+        expect(res.body).toEqual({
+          _id: expect.any(String),
+          username: 'booboo3000'
+        });
+      });
+  });
+
 });
