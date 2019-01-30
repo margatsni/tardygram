@@ -3,7 +3,7 @@ require('../../lib/utils/connect')();
 const mongoose = require('mongoose');
 const request = require('supertest');
 const app = require('../../lib/app');
-// const User = require('../../lib/models/User');
+const User = require('../../lib/models/User');
 
 describe('Auth test', () => {
 
@@ -37,5 +37,31 @@ describe('Auth test', () => {
           token: expect.any(String)
         });
       });
+  });
+
+  it('can signin an existing user', () => {
+    return User.create({
+      username: 'booboo3000',
+      password: 'abc123', 
+      // profilePhotoUrl: 'https://www.petmd.com/sites/default/files/petmd-shaking-puppy.jpg'
+    })
+      .then(() => {
+        return request(app)
+          .post('/auth/signin')
+          .send({
+            username: 'booboo3000',
+            password: 'abc123'
+          });
+      })
+      .then(res => {
+        expect(res.body).toEqual({
+          user: {
+            username: 'booboo3000',
+            _id: expect.any(String)
+          },
+          token: expect.any(String)
+        });
+      });
+
   });
 });
