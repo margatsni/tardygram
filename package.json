@@ -35,10 +35,12 @@
     "supertest": "^3.4.2"
   },
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "chance": "^1.0.18",
     "dotenv": "^6.2.0",
     "eslint": "^5.12.1",
     "express": "^4.16.4",
+    "jsonwebtoken": "^8.4.0",
     "mongoose": "^5.4.8",
     "morgan": "^1.9.1"
   }
