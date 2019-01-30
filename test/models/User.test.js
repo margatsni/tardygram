@@ -31,6 +31,4 @@ describe('User', () => {
     expect(errors).toBeDefined();
     expect(errors.username['message']).toEqual('Path `username` is required.');
   });
-
 });
-
