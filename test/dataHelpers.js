@@ -1,7 +1,7 @@
 require('dotenv').config();
 const connect = require('../lib/utils/connect');
 const mongoose = require('mongoose');
-const { userGramData } = require('./seedData');
+const userGramData = require('./seedData');
 const User = require('../lib/models/User');
 const Gram = require('../lib/models/Gram');
 const request = require('supertest');

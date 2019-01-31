@@ -1,7 +1,12 @@
 require('dotenv').config();
 require('../../lib/utils/connect')();
+const {
+  // getUser, 
+  getGram, 
+  // getGrams 
+} = require('../dataHelpers');
 const request = require('supertest');
-const mongoose = require('mongoose');
+// const mongoose = require('mongoose');
 const app = require('../../lib/app');
 const Gram = require('../../lib/models/Gram');
 // const { Types } = require('mongoose');
@@ -29,15 +34,15 @@ describe('Gram routes', () => {
       });
   };
 
-  beforeEach(done => {
-    return mongoose.connection.dropDatabase(() => {
-      done();
-    });
-  });
-  afterAll(done => {
-    mongoose.connection.close();
-    done();
-  });
+  // beforeEach(done => {
+  //   return mongoose.connection.dropDatabase(() => {
+  //     done();
+  //   });
+  // });
+  // afterAll(done => {
+  //   mongoose.connection.close();
+  //   done();
+  // });
 
   it('can create a gram', done => {
     return request(app)
@@ -95,6 +100,24 @@ describe('Gram routes', () => {
           account: { _id: expect.any(String) },
           photoUrl: 'https://bit.ly/2CZbLR0',
           caption: 'cool' 
+        });
+      });
+  });
+
+  it.only('can update a gram by id', () => {
+    return getGram()
+      .then(gram => {
+        return request(app)
+          .patch(`/grams/${gram._id}`)
+          .send({ caption: 'this is awesome!' });
+      })
+      .then(res => {
+        expect(res.body).toEqual({
+          tags: [expect.any(String), expect.any(String)],
+          _id: expect.any(String),
+          account: { _id: expect.any(String) },
+          photoUrl: expect.any(String),
+          caption: 'this is awesome!'
         });
       });
   });
