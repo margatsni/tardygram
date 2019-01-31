@@ -82,25 +82,19 @@ describe('Gram routes', () => {
       });
   });
 
-  it.skip('can get a gram by id', () => {
-    return Gram.create({
-      photoUrl: 'https://www.catster.com/wp-content/uploads/2017/12/A-kitten-meowing.jpg',
-      caption: 'Rarr1',
-      tags: ['#cute', '#fuzzy', '#adorbz', '#caturday'],
-      account: 'blahblah'
-    })
+  it('can get a gram by id', () => {
+    return createGram('booboo3000')
       .then(createdGram => {
         return request(app)
           .get(`/grams/${createdGram._id}`);
       })
       .then(res => {
-        console.log(res.body);
-        expect(res.body).toEqual({
-          tags: ['#cute', '#fuzzy', '#adorbz', '#caturday'],
-          _id: '5c5241f6f76c9ed78412398e',
-          photoUrl:
-           'https://www.catster.com/wp-content/uploads/2017/12/A-kitten-meowing.jpg',
-          caption: 'Rarr1'
+        expect(res.body).toEqual({ 
+          tags: ['#tags', '#tagsssss'],
+          _id: expect.any(String),
+          account: { _id: expect.any(String) },
+          photoUrl: 'https://bit.ly/2CZbLR0',
+          caption: 'cool' 
         });
       });
   });
