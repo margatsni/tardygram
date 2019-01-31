@@ -74,6 +74,7 @@ describe('Gram routes', () => {
       .then(gram => {
         return request(app)
           .patch(`/grams/${gram._id}`)
+          .set('Authorization', `Bearer ${getToken()}`)
           .send({ caption: 'this is awesome!' });
       })
       .then(res => {
