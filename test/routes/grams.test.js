@@ -1,39 +1,14 @@
 const {
-  // getUser, 
   getGram, 
   getGrams,
   getToken
 } = require('../dataHelpers');
 const request = require('supertest');
-// const mongoose = require('mongoose');
 const app = require('../../lib/app');
-const Gram = require('../../lib/models/Gram');
-// const { Types } = require('mongoose');
-const User = require('../../lib/models/User');
 
 describe('Gram routes', () => {
 
-  const createGram = (account, caption = 'cool', photoUrl = 'https://bit.ly/2CZbLR0', tags = ['#tags', '#tagsssss']) => {
-    return createUser(account)
-      .then(user => {
-        return Gram.create({
-          account: user._id,
-          photoUrl,
-          caption,
-          tags
-        })
-          .then(gram => ({ ...gram, _id: gram._id.toString() }));
-      });
-  };
-
-  const createUser = (username = 'booboo3000', password = 'abc123') => {
-    return User.create({ username, password })
-      .then(user => {
-        return { ...user, _id: user._id.toString() };
-      });
-  };
-
-  it.only('can create a gram', () => {
+  it('can create a gram', () => {
     return request(app)
       .post('/grams')
       .set('Authorization', `Bearer ${getToken()}`)
@@ -77,18 +52,19 @@ describe('Gram routes', () => {
   });
 
   it('can get a gram by id', () => {
-    return createGram('booboo3000')
-      .then(createdGram => {
+    return getGram()
+      .then(foundGram => {
         return request(app)
-          .get(`/grams/${createdGram._id}`);
+          .get(`/grams/${foundGram._id}`);
       })
       .then(res => {
         expect(res.body).toEqual({ 
-          tags: ['#tags', '#tagsssss'],
+          tags: [expect.any(String), expect.any(String)],
           _id: expect.any(String),
           account: { _id: expect.any(String) },
-          photoUrl: 'https://bit.ly/2CZbLR0',
-          caption: 'cool' 
+          photoUrl: expect.any(String),
+          caption: expect.any(String),
+          comments: expect.any(Array) 
         });
       });
   });
@@ -129,6 +105,7 @@ describe('Gram routes', () => {
         expect(res.status).toEqual(404);
       });
   });
+
 });
 
 

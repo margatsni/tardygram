@@ -48,7 +48,7 @@ Create authentication routes
 
 Create RESTful post routes
 
-* `POST /posts`
+<!-- * `POST /posts`
   * requires authentication
   * creates a new post
   * responds with the new post
@@ -56,10 +56,10 @@ Create RESTful post routes
 * `GET /posts`
   * responds with a list of posts
 * `GET /posts/:id`
-  * responds with a post by id
-  * should include the populated user
-  * should include all comments associated with the post (populated with commenter)
-    * HINT: You'll need to make two separate queries and a `Promise.all`
+  * responds with a post by id -->
+  <!-- * should include the populated user -->
+  <!-- * should include all comments associated with the post (populated with commenter)
+    * HINT: You'll need to make two separate queries and a `Promise.all` -->
 * `PATCH /posts/:id`
   * requires authentication
   * only can update the post caption
