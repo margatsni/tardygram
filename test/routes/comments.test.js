@@ -32,4 +32,22 @@ describe('comments routes', () => {
       });
   });
   
+  it('deletes a comment by id', () => {
+    return getComment()
+      .then(comment => {
+        return Promise.all([
+          Promise.resolve(comment._id),
+          request(app)
+            .delete(`/comments/${comment._id}`)
+        ]);
+      })
+      .then(([_id, res]) => {
+        expect(res.body).toEqual({ deleted: 1 });
+        return request(app)
+          .get(`/comments/${_id}`);
+      })
+      .then(res => {
+        expect(res.status).toEqual(404);
+      });
+  });
 });
