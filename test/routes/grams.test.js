@@ -1,7 +1,8 @@
 const {
-  getUser, 
+  // getUser, 
   getGram, 
-  getGrams
+  getGrams,
+  getToken
 } = require('../dataHelpers');
 const request = require('supertest');
 // const mongoose = require('mongoose');
@@ -32,37 +33,24 @@ describe('Gram routes', () => {
       });
   };
 
-  // beforeEach(done => {
-  //   return mongoose.connection.dropDatabase(() => {
-  //     done();
-  //   });
-  // });
-  // afterAll(done => {
-  //   mongoose.connection.close();
-  //   done();
-  // });
-
-  it('can create a gram', () => {
-    return getUser()
-      .then(user => {
-        return request(app)
-          .post('/grams')
-          .send({
-            account: user._id,
-            photoUrl: 'https://www.catster.com/wp-content/uploads/2017/12/A-kitten-meowing.jpg',
-            caption: 'Rarr',
-            tags: ['#cute', '#fuzzy', '#adorbz', '#caturday']
-          })
-          .then(res => {
-            expect(res.body).toEqual({
-              __v: 0,
-              _id: expect.any(String),
-              account: expect.any(String),
-              photoUrl: 'https://www.catster.com/wp-content/uploads/2017/12/A-kitten-meowing.jpg',
-              caption: 'Rarr',
-              tags: ['#cute', '#fuzzy', '#adorbz', '#caturday']
-            });
-          });
+  it.only('can create a gram', () => {
+    return request(app)
+      .post('/grams')
+      .set('Authorization', `Bearer ${getToken()}`)
+      .send({
+        photoUrl: 'https://www.catster.com/wp-content/uploads/2017/12/A-kitten-meowing.jpg',
+        caption: 'Rarr',
+        tags: ['#cute', '#fuzzy', '#adorbz', '#caturday']
+      })
+      .then(res => {
+        expect(res.body).toEqual({
+          __v: 0,
+          _id: expect.any(String),
+          account: expect.any(String),
+          photoUrl: 'https://www.catster.com/wp-content/uploads/2017/12/A-kitten-meowing.jpg',
+          caption: 'Rarr',
+          tags: ['#cute', '#fuzzy', '#adorbz', '#caturday']
+        });
 
       });
   });
