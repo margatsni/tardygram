@@ -124,6 +124,27 @@ describe('Gram routes', () => {
         });
       });
   });
+
+  it('delete a gram by id', () => {
+    return getGram()
+      .then(gram => {
+        return Promise.all([
+          Promise.resolve(gram._id),
+          request(app)
+            .delete(`/grams/${gram._id}`)
+        ]);
+      })
+      .then(([_id, res]) => {
+        expect(res.body).toEqual({ deleted: 1 });
+        return request(app)
+          .get(`/grams/${_id}`);
+      })
+      .then(res => {
+        expect(res.status).toEqual(404);
+      });
+  });
 });
+
+
 
 
