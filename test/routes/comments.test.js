@@ -1,7 +1,7 @@
 const {
   getUser, 
   getGram, 
-  // getGrams
+  getComment
 } = require('../dataHelpers');
 const request = require('supertest');
 const app = require('../../lib/app');
@@ -30,5 +30,6 @@ describe('comments routes', () => {
             });
           });
       });
-  });  
+  });
+  
 });

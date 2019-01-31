@@ -3,6 +3,7 @@ const connect = require('../lib/utils/connect');
 const mongoose = require('mongoose');
 const userGramData = require('./seedData');
 const User = require('../lib/models/User');
+const Comment = require('../lib/models/Comment');
 const Gram = require('../lib/models/Gram');
 const request = require('supertest');
 const app = require('../lib/app');
@@ -16,7 +17,7 @@ beforeEach(done => {
 });
 
 beforeEach(()=> {
-  return userGramData({ totalUsers: 3, totalGrams: 5 });
+  return userGramData({ totalUsers: 3, totalGrams: 5, totalComments: 10 });
 });
 
 let token;
@@ -47,6 +48,7 @@ const createGetters = Model => {
 
 module.exports = { 
   ...createGetters(User), 
-  ...createGetters(Gram), 
+  ...createGetters(Gram),
+  ...createGetters(Comment), 
   getToken: () => token
 };
