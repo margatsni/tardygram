@@ -42,7 +42,13 @@ describe('comments routes', () => {
         ]);
       })
       .then(([_id, res]) => {
-        expect(res.body).toEqual({ deleted: 1 });
+        expect(res.body).toEqual({
+          __v: 0,
+          _id,
+          comment: expect.any(String),
+          commentBy: expect.any(String),
+          gram: expect.any(String),
+        });
         return request(app)
           .get(`/comments/${_id}`);
       })
