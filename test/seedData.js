@@ -20,7 +20,7 @@ const userGramData = () => {
           account: chance.pickone(users)._id,
           photoUrl: chance.url({ extensions: ['gif', 'jpg', 'png'] }),
           caption: chance.sentence(),
-          tags: [...chance.string()]
+          tags: [chance.hashtag(), chance.hashtag()]
         });
       }));
     });
