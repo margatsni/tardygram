@@ -10,7 +10,8 @@
   "scripts": {
     "test": "jest --verbose --runInBand --detectOpenHandles",
     "test:watch": "npm run test -- --watch --detectOpenHandles",
-    "start": "nodemon server.js",
+    "start": "node server.js",
+    "start:watch": "nodemon server.js",
     "lint": "eslint .",
     "pretest": "npm run lint",
     "seed": "node seed.js"
