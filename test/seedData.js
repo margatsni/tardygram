@@ -11,8 +11,8 @@ module.exports = ({ totalUsers = DEFAULT_TOTAL_USERS, totalGrams = DEFAULT_TOTAL
 
   return Promise.all([...Array(totalUsers)].map((ele, i) => {
     return User.create({
-      username: `${i}${chance.word()}`,
-      password: chance.string(),
+      username: `${i}booboo3000`,
+      password: 'password',
       profilePhotoUrl: chance.url({ extensions: ['gif', 'jpg', 'png'] })
     });
   }))
