@@ -1,9 +1,9 @@
 require('dotenv').config();
 require('../../lib/utils/connect')();
 const {
-  // getUser, 
+  getUser, 
   getGram, 
-  // getGrams 
+  getGrams
 } = require('../dataHelpers');
 const request = require('supertest');
 // const mongoose = require('mongoose');
@@ -44,46 +44,49 @@ describe('Gram routes', () => {
   //   done();
   // });
 
-  it('can create a gram', done => {
-    return request(app)
-      .post('/grams')
-      .send({
-        photoUrl: 'https://www.catster.com/wp-content/uploads/2017/12/A-kitten-meowing.jpg',
-        caption: 'Rarr',
-        tags: ['#cute', '#fuzzy', '#adorbz', '#caturday']
-      })
-      .then(res => {
-        expect(res.body).toEqual({
-          __v: 0,
-          _id: expect.any(String),
-          photoUrl: 'https://www.catster.com/wp-content/uploads/2017/12/A-kitten-meowing.jpg',
-          caption: 'Rarr',
-          tags: ['#cute', '#fuzzy', '#adorbz', '#caturday']
-        });
-        done();
+  it('can create a gram', () => {
+    return getUser()
+      .then(user => {
+        return request(app)
+          .post('/grams')
+          .send({
+            account: user._id,
+            photoUrl: 'https://www.catster.com/wp-content/uploads/2017/12/A-kitten-meowing.jpg',
+            caption: 'Rarr',
+            tags: ['#cute', '#fuzzy', '#adorbz', '#caturday']
+          })
+          .then(res => {
+            expect(res.body).toEqual({
+              __v: 0,
+              _id: expect.any(String),
+              account: expect.any(String),
+              photoUrl: 'https://www.catster.com/wp-content/uploads/2017/12/A-kitten-meowing.jpg',
+              caption: 'Rarr',
+              tags: ['#cute', '#fuzzy', '#adorbz', '#caturday']
+            });
+          });
+
       });
   });
 
   it('can get a list of grams', () => {
-    return Promise.all(['booboo3000', 'booboo3001'].map(el => createGram(el)))
-      .then(() => {
-        return request(app)
-          .get('/grams');
-      })
+    return request(app)
+      .get('/grams')
       .then(res => {
-        expect(res.body).toHaveLength(2);
-        expect(res.body).toEqual(
-          [{ tags: ['#tags', '#tagsssss'],
-            _id: expect.any(String),
-            account: { _id: expect.any(String) },
-            photoUrl: 'https://bit.ly/2CZbLR0',
-            caption: 'cool' },
-          { tags: ['#tags', '#tagsssss'],
-            _id: expect.any(String),
-            account: { _id: expect.any(String) },
-            photoUrl: 'https://bit.ly/2CZbLR0',
-            caption: 'cool' }]
-        );
+        return Promise.all([
+          Promise.resolve(res.body),
+          getGrams()
+        ]);
+      })
+      .then(([body, grams]) => {
+        expect(body).toHaveLength(grams.length);
+        grams.forEach(gram => {
+          delete gram.__v;
+          expect(body).toContainEqual({
+            ...gram,
+            account: { _id: gram.account }
+          });
+        });
       });
   });
 
@@ -104,7 +107,7 @@ describe('Gram routes', () => {
       });
   });
 
-  it.only('can update a gram by id', () => {
+  it('can update a gram by id', () => {
     return getGram()
       .then(gram => {
         return request(app)
