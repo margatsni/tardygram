@@ -4,9 +4,31 @@ const request = require('supertest');
 const mongoose = require('mongoose');
 const app = require('../../lib/app');
 const Gram = require('../../lib/models/Gram');
-// const User = require('../../lib/models/User');
+// const { Types } = require('mongoose');
+const User = require('../../lib/models/User');
 
 describe('Gram routes', () => {
+
+  const createGram = (account, caption = 'cool', photoUrl = 'https://bit.ly/2CZbLR0', tags = ['#tags', '#tagsssss']) => {
+    return createUser(account)
+      .then(user => {
+        return Gram.create({
+          account: user._id,
+          photoUrl,
+          caption,
+          tags
+        })
+          .then(gram => ({ ...gram, _id: gram._id.toString() }));
+      });
+  };
+
+  const createUser = (username = 'booboo3000', password = 'abc123') => {
+    return User.create({ username, password })
+      .then(user => {
+        return { ...user, _id: user._id.toString() };
+      });
+  };
+
   beforeEach(done => {
     return mongoose.connection.dropDatabase(() => {
       done();
@@ -23,8 +45,7 @@ describe('Gram routes', () => {
       .send({
         photoUrl: 'https://www.catster.com/wp-content/uploads/2017/12/A-kitten-meowing.jpg',
         caption: 'Rarr',
-        tags: ['#cute', '#fuzzy', '#adorbz', '#caturday'],
-        // account: user._id
+        tags: ['#cute', '#fuzzy', '#adorbz', '#caturday']
       })
       .then(res => {
         expect(res.body).toEqual({
@@ -33,31 +54,54 @@ describe('Gram routes', () => {
           photoUrl: 'https://www.catster.com/wp-content/uploads/2017/12/A-kitten-meowing.jpg',
           caption: 'Rarr',
           tags: ['#cute', '#fuzzy', '#adorbz', '#caturday']
-          // account: expect.any(String)
         });
         done();
       });
   });
 
   it('can get a list of grams', () => {
-    return Promise.all([
-      {
-        photoUrl: 'https://www.catster.com/wp-content/uploads/2017/12/A-kitten-meowing.jpg',
-        caption: 'Rarr1',
-        tags: ['#cute', '#fuzzy', '#adorbz', '#caturday']
-      },
-      {
-        photoUrl: 'https://www.catster.com/wp-content/uploads/2017/12/A-kitten-meowing.jpg',
-        caption: 'Rarr2',
-        tags: ['#cute', '#fuzzy', '#adorbz', '#caturday']
-      }
-    ].map(gram => Gram.create(gram)))
+    return Promise.all(['booboo3000', 'booboo3001'].map(el => createGram(el)))
       .then(() => {
         return request(app)
           .get('/grams');
       })
       .then(res => {
         expect(res.body).toHaveLength(2);
+        expect(res.body).toEqual(
+          [{ tags: ['#tags', '#tagsssss'],
+            _id: expect.any(String),
+            account: { _id: expect.any(String) },
+            photoUrl: 'https://bit.ly/2CZbLR0',
+            caption: 'cool' },
+          { tags: ['#tags', '#tagsssss'],
+            _id: expect.any(String),
+            account: { _id: expect.any(String) },
+            photoUrl: 'https://bit.ly/2CZbLR0',
+            caption: 'cool' }]
+        );
+      });
+  });
+
+  it.skip('can get a gram by id', () => {
+    return Gram.create({
+      photoUrl: 'https://www.catster.com/wp-content/uploads/2017/12/A-kitten-meowing.jpg',
+      caption: 'Rarr1',
+      tags: ['#cute', '#fuzzy', '#adorbz', '#caturday'],
+      account: 'blahblah'
+    })
+      .then(createdGram => {
+        return request(app)
+          .get(`/grams/${createdGram._id}`);
+      })
+      .then(res => {
+        console.log(res.body);
+        expect(res.body).toEqual({
+          tags: ['#cute', '#fuzzy', '#adorbz', '#caturday'],
+          _id: '5c5241f6f76c9ed78412398e',
+          photoUrl:
+           'https://www.catster.com/wp-content/uploads/2017/12/A-kitten-meowing.jpg',
+          caption: 'Rarr1'
+        });
       });
   });
 });
