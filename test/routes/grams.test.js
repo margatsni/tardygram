@@ -88,26 +88,55 @@ describe('Gram routes', () => {
       });
   });
 
-  it('delete a gram by id', () => {
+  it('throws an error when updating anything other than a caption', () => {
     return getGram()
       .then(gram => {
-        return Promise.all([
-          Promise.resolve(gram._id),
-          request(app)
-            .delete(`/grams/${gram._id}`)
-        ]);
-      })
-      .then(([_id, res]) => {
-        expect(res.body).toEqual({ deleted: 1 });
+        console.log('gram!', gram);
         return request(app)
-          .get(`/grams/${_id}`);
+          .patch(`/grams/${gram._id}`)
+          .set('Authorization', `Bearer ${getToken()}`)
+          .send({ photoUrl: '/thisisawesome!' });
       })
       .then(res => {
-        expect(res.status).toEqual(404);
+        console.log('body', res.body);
+        // expect(res.body).toEqual({
+        //   tags: [expect.any(String), expect.any(String)],
+        //   _id: expect.any(String),
+        //   account: { _id: expect.any(String) },
+        //   photoUrl: expect.any(String),
+        //   caption: 'this is awesome!'
       });
   });
-
 });
+
+it('delete a gram by id', () => {
+  return getGram()
+    .then(gram => {
+      return Promise.all([
+        Promise.resolve(gram._id),
+        request(app)
+          .delete(`/grams/${gram._id}`)
+          .set('Authorization', `Bearer ${getToken()}`)
+      ]);
+    })
+    .then(([_id, res]) => {
+      expect(res.body).toEqual({
+        __v: 0,
+        _id,
+        photoUrl: expect.any(String),
+        account: { _id: expect.any(String) },
+        caption: expect.any(String),
+        tags: expect.any(Array)
+      });
+      return request(app)
+        .get(`/grams/${_id}`);
+    })
+    .then(res => {
+      expect(res.status).toEqual(404);
+    });
+});
+
+
 
 
 
