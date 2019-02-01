@@ -26,7 +26,6 @@ describe('Gram routes', () => {
           caption: 'Rarr',
           tags: ['#cute', '#fuzzy', '#adorbz', '#caturday']
         });
-
       });
   });
 
