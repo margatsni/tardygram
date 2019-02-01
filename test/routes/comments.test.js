@@ -1,7 +1,8 @@
 const {
   getUser, 
   getGram, 
-  getComment
+  getComment,
+  getToken
 } = require('../dataHelpers');
 const request = require('supertest');
 const app = require('../../lib/app');
@@ -14,6 +15,7 @@ describe('comments routes', () => {
           .then(user => {
             return request(app)
               .post('/comments')
+              .set('Authorization', `Bearer ${getToken()}`)
               .send({
                 commentBy: user._id,
                 gram: gram._id,
@@ -39,6 +41,7 @@ describe('comments routes', () => {
           Promise.resolve(comment._id),
           request(app)
             .delete(`/comments/${comment._id}`)
+            .set('Authorization', `Bearer ${getToken()}`)
         ]);
       })
       .then(([_id, res]) => {
