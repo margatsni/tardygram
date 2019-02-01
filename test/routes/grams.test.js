@@ -88,56 +88,30 @@ describe('Gram routes', () => {
       });
   });
 
-  it('throws an error when updating anything other than a caption', () => {
+  it('delete a gram by id', () => {
     return getGram()
       .then(gram => {
-        console.log('gram!', gram);
+        return Promise.all([
+          Promise.resolve(gram._id),
+          request(app)
+            .delete(`/grams/${gram._id}`)
+            .set('Authorization', `Bearer ${getToken()}`)
+        ]);
+      })
+      .then(([_id, res]) => {
+        expect(res.body).toEqual({
+          __v: 0,
+          _id,
+          photoUrl: expect.any(String),
+          account: expect.any(String),
+          caption: expect.any(String),
+          tags: expect.any(Array)
+        });
         return request(app)
-          .patch(`/grams/${gram._id}`)
-          .set('Authorization', `Bearer ${getToken()}`)
-          .send({ photoUrl: '/thisisawesome!' });
+          .get(`/grams/${_id}`);
       })
       .then(res => {
-        console.log('body', res.body);
-        // expect(res.body).toEqual({
-        //   tags: [expect.any(String), expect.any(String)],
-        //   _id: expect.any(String),
-        //   account: { _id: expect.any(String) },
-        //   photoUrl: expect.any(String),
-        //   caption: 'this is awesome!'
+        expect(res.status).toEqual(404);
       });
   });
 });
-
-it('delete a gram by id', () => {
-  return getGram()
-    .then(gram => {
-      return Promise.all([
-        Promise.resolve(gram._id),
-        request(app)
-          .delete(`/grams/${gram._id}`)
-          .set('Authorization', `Bearer ${getToken()}`)
-      ]);
-    })
-    .then(([_id, res]) => {
-      expect(res.body).toEqual({
-        __v: 0,
-        _id,
-        photoUrl: expect.any(String),
-        account: expect.any(String),
-        caption: expect.any(String),
-        tags: expect.any(Array)
-      });
-      return request(app)
-        .get(`/grams/${_id}`);
-    })
-    .then(res => {
-      expect(res.status).toEqual(404);
-    });
-});
-
-
-
-
-
-
