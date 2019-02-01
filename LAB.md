@@ -36,13 +36,13 @@ Comments have:
 Create authentication routes
 
 * `POST /auth/signup`
-  * creates a new user
-  * responds with the created user and token
+  <!-- * creates a new user -->
+  <!-- * responds with the created user and token -->
 * `POST /auth/signin`
-  * responds with a user and token
+  <!-- * responds with a user and token -->
 * `GET /auth/verify`
-  * uses the `ensureAuth` middleware
-  * responds with a user
+  <!-- * uses the `ensureAuth` middleware
+  * responds with a user -->
 
 ### Posts
 
@@ -64,12 +64,12 @@ Create RESTful post routes
   <!-- * requires authentication -->
   * only can update the post caption
   <!-- * respond with the updated post -->
-  * NOTE: make sure the user attempting to update the post owns it
+  <!-- * NOTE: make sure the user attempting to update the post owns it -->
 * `DELETE /posts/:id`
-  * requires authentication
+  <!-- * requires authentication -->
   <!-- * deletes a post -->
   <!-- * responds with the deleted post -->
-  * NOTE: make sure the user attempting to delete the post owns it
+  <!-- * NOTE: make sure the user attempting to delete the post owns it -->
 * `GET /posts/popular`
   * respond with a list of the 10 posts with the most comments
 
@@ -78,15 +78,15 @@ Create RESTful post routes
 Create RESTful comments routes
 
 * `POST /comments`
-  * requires authentication
-  * create a new comment
-  * respond with the comment
-  * HINT: get the user who created the comment from `req.user`.
+  <!-- * requires authentication -->
+  <!-- * create a new comment
+  * respond with the comment -->
+  <!-- * HINT: get the user who created the comment from `req.user`. -->
 * `DELETE /comments/:id`
-  * requires authentication
-  * delete a comment by id
-  * respond with the deleted comment
-  * NOTE: make sure the user attempting to delete the comment owns it
+  <!-- * requires authentication -->
+  <!-- * delete a comment by id
+  * respond with the deleted comment -->
+  <!-- * NOTE: make sure the user attempting to delete the comment owns it -->
 * `GET /comments/prolific`
 
 ### Users

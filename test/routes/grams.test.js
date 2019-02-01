@@ -124,7 +124,7 @@ it('delete a gram by id', () => {
         __v: 0,
         _id,
         photoUrl: expect.any(String),
-        account: { _id: expect.any(String) },
+        account: expect.any(String),
         caption: expect.any(String),
         tags: expect.any(Array)
       });
